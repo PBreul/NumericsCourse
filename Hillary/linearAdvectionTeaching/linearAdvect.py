@@ -18,7 +18,7 @@
 ### If you are using Python 2.7 rather than Python 3, import various###
 ### functions from Python 3 such as to use real number division     ###
 ### rather than integer division. ie 3/2  = 1.5  rather than 3/2 = 1###
-#from __future__ import absolute_import, division, print_function
+# from __future__ import absolute_import, division, print_function
 
 ### The matplotlib package contains plotting functions              ###
 import matplotlib.pyplot as plt
@@ -28,6 +28,7 @@ import matplotlib.pyplot as plt
 from initialConditions import *
 from advectionSchemes import *
 from diagnostics import *
+
 
 ### The main code is inside a function to avoid global variables    ###
 def main():
@@ -42,40 +43,40 @@ def main():
     c = 0.2
 
     # Derived parameters
-    dx = (xmax - xmin)/nx
-    
+    dx = (xmax - xmin) / nx
+
     # spatial points for plotting and for defining initial conditions
     x = np.arange(xmin, xmax, dx)
 
     # Initial conditions
     phiOld = cosBell(x, 0, 0.75)
     # Exact solution is the initial condition shifted around the domain
-    phiAnalytic = cosBell((x - c*nt*dx)%(xmax - xmin), 0, 0.75)
+    phiAnalytic = cosBell((x - c * nt * dx) % (xmax - xmin), 0, 0.75)
 
     # Advect the profile using finite difference for all the time steps
     phiFTCS = FTCS(phiOld.copy(), c, nt)
-    
+
     # Calculate and print out error norms
     print("FTCS l2 error norm = ", l2ErrorNorm(phiFTCS, phiAnalytic))
     print("FTCS linf error norm = ", lInfErrorNorm(phiFTCS, phiAnalytic))
 
     # Plot the solutions
-    font = {'size'   : 20}
+    font = {'size': 20}
     plt.rc('font', **font)
     plt.figure(1)
     plt.clf()
     plt.ion()
     plt.plot(x, phiOld, label='Initial', color='black')
-    plt.plot(x, phiAnalytic, label='Analytic', color='black', 
+    plt.plot(x, phiAnalytic, label='Analytic', color='black',
              linestyle='--', linewidth=2)
     plt.plot(x, phiFTCS, label='FTCS', color='blue')
     plt.axhline(0, linestyle=':', color='black')
-    plt.ylim([-0.2,1.2])
-    plt.legend(bbox_to_anchor=(1.15 , 1.1))
+    plt.ylim([-0.2, 1.2])
+    plt.legend(bbox_to_anchor=(1.15, 1.1))
     plt.xlabel('$x$')
     input('press return to save file and continue')
     plt.savefig('plots/changeThisName.pdf')
 
+
 ### Run the function main defined in this file                      ###
 main()
-
