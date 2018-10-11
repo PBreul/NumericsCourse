@@ -10,17 +10,19 @@ if __name__ == "__main__":
 
     # Setting initial values
     x_0 = 0
-    x_max = 1
+    x_max = 10
     grid_points = 100
     time_steps = 100
+
+    # Courant Parameter
     c = 0.1
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"
-    arguments_initial_cond = 0.9
+    arguments_initial_cond = None
 
     # Key word for advection scheme
-    advection_scheme_key = "FTCS"
+    advection_scheme_key = "CTCS"
 
     dx = (x_max - x_0) / grid_points
     x_grid = np.linspace(x_0, x_max, grid_points)
