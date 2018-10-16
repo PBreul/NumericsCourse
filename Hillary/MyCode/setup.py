@@ -1,6 +1,7 @@
 import numpy as np
 
-"""This file contains functions for setting initial conditions. They take a linspaced python array"""
+
+# This file contains functions for setting initial conditions. They take a linspaced python array
 
 
 def initial_condition(x, initial_name, *args):
@@ -9,17 +10,18 @@ def initial_condition(x, initial_name, *args):
 
     assert type(initial_name) == str
 
-    u = np.zeros(len(x))
+    u_in = np.zeros(len(x))
 
     if initial_name == "gauss":
-        u = gauss_curve(x, *args)
+        u_in = gauss_curve(x, *args)
     else:
         raise ValueError("Non existing Label for initial condition.")
 
-    return u
+    return u_in
 
 
 def gauss_curve(x, x_0=None):
+    """Gives back a simple Gauss-Curve"""
     if x_0 is None:
         x_0 = np.mean(x)
 
