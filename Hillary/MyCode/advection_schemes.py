@@ -65,8 +65,9 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key):
     if centered_in_time is True:
 
         # We have to do one step with a forward in time scheme before we can use centered in time.
-        u_old_old = u_grid
-        u_grid = ftcs(u_grid, c)
+        if time_steps > 0:
+            u_old_old = u_grid
+            u_grid = ftcs(u_grid, c)
 
         # Actual time evolution
         for t in range(time_steps - 1):
