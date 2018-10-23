@@ -63,8 +63,8 @@ def observe(observer, u_grid, analytical_sol_array, t):
 def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solution_function, observers=None):
     """This function calles the chosen advection routine over and over again until the number of time steps is reached.
      In each step the distribution is evolved in time"""
-
-    # Dictionary of possible advection schemes, contains function plus information if it is centered in tine
+    # TODO: This function got a bit messy, try to make it cleaner.
+    # Dictionary of possible advection schemes, contains function plus information if it is centered in time
     funcdict = {'FTCS': [ftcs, False], 'FTBS': [ftbs, False], "CTCS": [ctcs, True], "BTCS": [btcs, False]}
 
     # choose the function for the desired advection scheme
@@ -89,7 +89,7 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
                 # iterate over observer list
                 for observer in observers:
                     # Function checks which observe we have and executes it
-                    observe(observer,u_grid, analyt_sol_array, 1)
+                    observe(observer,u_grid, analyt_sol_array, 0)
 
         # Actual time evolution
         for t in range(time_steps - 1):
@@ -104,7 +104,7 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
                 # iterate over observer list
                 for observer in observers:
                     # Function checks which observe we have and executes it
-                    observe(observer,u_grid, analyt_sol_array, t)
+                    observe(observer,u_grid, analyt_sol_array, t+1)
 
     else:
         # Check if the Scheme is implicit/BTCS -> Calculate the inverse matrix
@@ -125,5 +125,5 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
                 # iterate over observer list
                 for observer in observers:
                     # Function checks which observe we have and executes it
-                    observe(observer,u_grid, analyt_sol_array, t )
+                    observe(observer,u_grid, analyt_sol_array, t)
     return u_grid

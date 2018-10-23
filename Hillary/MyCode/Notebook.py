@@ -1,4 +1,3 @@
-print(type(2))
+import numpy as np
 
-if type(2) == int:
-    print("Helloe")
+print(np.arange(5)+1)

@@ -11,6 +11,7 @@ class ErrorObserver:
         self.linf_array = np.zeros(number_timesteps)
 
     def calculate_errors(self, analytical_solution, numerical_solution, timestep):
+        """Calculates the L_2 and L_Inf norm between the numerical and analytical solution. """
         self.l2_array[timestep] = diagnostics.l2_error_norm(analytical_solution, numerical_solution)
         self.linf_array[timestep] = diagnostics.l_inf_error_norm(analytical_solution, numerical_solution)
 
