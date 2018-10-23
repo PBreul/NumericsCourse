@@ -1,4 +1,5 @@
 import numpy as np
+import Observers
 
 
 def btcs_m_inv(length, c):
@@ -47,7 +48,19 @@ def btcs(u_old, c, m_inv, *args):
     return u_new
 
 
-def time_evolution(u_grid, time_steps, c, advection_scheme_key):
+def observe(observer, u_grid, analytical_sol_array, t):
+    """Checks which type of observer is given and calls the observer function."""
+    if type(observer) == Observers.ErrorObserver:
+        observer.calculate_errors(u_grid, analytical_sol_array, t)
+
+    elif type(observer) == Observers.MomentObserver:
+        observer.calculate_moments(u_grid, t)
+
+    else:
+        pass
+
+
+def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solution_function, observers=None):
     """This function calles the chosen advection routine over and over again until the number of time steps is reached.
      In each step the distribution is evolved in time"""
 
@@ -69,11 +82,29 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key):
             u_old_old = u_grid
             u_grid = ftcs(u_grid, c)
 
+            # If we have observers, execute them
+            if observers is not None:
+                analyt_sol_array = analytical_solution_function(1)
+
+                # iterate over observer list
+                for observer in observers:
+                    # Function checks which observe we have and executes it
+                    observe(observer,u_grid, analyt_sol_array, 1)
+
         # Actual time evolution
         for t in range(time_steps - 1):
+
             u_new = advection_scheme(u_grid, c, u_old_old)
             u_old_old = u_grid.copy()
             u_grid = u_new.copy()
+
+            # If we have observers, execute them
+            if observers is not None:
+                analyt_sol_array = analytical_solution_function(t + 2)
+                # iterate over observer list
+                for observer in observers:
+                    # Function checks which observe we have and executes it
+                    observe(observer,u_grid, analyt_sol_array, t)
 
     else:
         # Check if the Scheme is implicit/BTCS -> Calculate the inverse matrix
@@ -87,4 +118,12 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key):
         for t in range(time_steps):
             u_grid = advection_scheme(u_grid, c, m_inv)
 
+            # If we have observers, execute them
+            if observers is not None:
+                analyt_sol_array = analytical_solution_function(t + 1)
+
+                # iterate over observer list
+                for observer in observers:
+                    # Function checks which observe we have and executes it
+                    observe(observer,u_grid, analyt_sol_array, t )
     return u_grid

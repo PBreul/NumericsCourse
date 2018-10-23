@@ -1,2 +1,4 @@
-diction = {"1": [5,2]}
+print(type(2))
 
+if type(2) == int:
+    print("Helloe")
