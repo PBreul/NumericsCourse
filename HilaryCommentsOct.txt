@@ -1,0 +1,15 @@
+Terrific code. I cannot fine any errors. It is well structured and well commented. Good doc strings. Good use of classes.
+
+I think that the oscillations of the error norm are due to the relative position of the solution on the grid. When the solution has moved an integer number of grid points then the solutions are lowest. So for a Courant number of 0.1 the error is lowest every ten time steps. This is due to the sampling of the error at the grid points. If instead you defined the error as an integral over space then I think that the error would grow continuously (ie if you assumed a finite volume representation and calculated integrals over space). These jumps are not a problem. There is nothing that needs fixing. 
+
+In order to do the implicit schemes you use linalg.inv. This would be impractical for a realistic size model. Instead you should use:
+
+u = np.linalg.solve(m, u)
+
+This solves the matrix equation rather than inverting the matrix which is much cheaper for sparse, diagonally dominant matrices.
+
+You will need to include a test case that shows up the problems with CTCS so you will need something with discontinuities in the initial conditions. 
+
+I would recommend implementing a scheme which behaves better than CTCS and FTBS for discontinuous initial conditions. For example one of the schemes described in chapter 6 of the notes.
+
+Good use of git
