@@ -12,17 +12,17 @@ if __name__ == "__main__":
     """This function is sets the initial conditions and evolves everything in time."""
 
     savingpath = "Plots/"
-    advection_scheme_key_list = ("FTCS", "BTCS", "CTCS", "FTBS")
+    advection_scheme_key_list = ("FTCS", "BTCS", "CTCS", "FTBS","LaxWendroff")
 
     # Setting initial values
     x_min = 0
     x_max = 20
     grid_points = 200
-    time_steps = 200
+    time_steps = 350
 
     # Courant Parameter
-    c = np.float(sys.argv[1])
-    # c = 0.1
+    #c = np.float(sys.argv[1])
+    c = 0.7
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"
@@ -92,4 +92,5 @@ if __name__ == "__main__":
     if not os.path.exists(savingpath):
         os.makedirs(savingpath)
     # Save Plot
-    plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
+    #plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
+    plt.show()

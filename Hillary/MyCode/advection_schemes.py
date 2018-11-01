@@ -18,6 +18,18 @@ def btcs_m_inv(length, c):
     return m_inv
 
 
+def semi_lagrangien(u_old, c, ):
+    pass
+
+
+def lax_wendroff(u_old, c, *args):
+    """Time Step evolution for Lax Wendroff"""
+    u_plus_one = np.roll(u_old, -1)
+    u_minus_one = np.roll(u_old, 1)
+    u_new = u_old - c / 2 * (u_plus_one - u_minus_one) + c ** 2 / 2 * (u_plus_one - 2 * u_old + u_minus_one)
+    return u_new
+
+
 def ftcs(u_old, c, *args):
     """Time Step evolution for FTCS"""
     # using np.roll() implies periodic boundary conditions.
@@ -65,7 +77,7 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
      In each step the distribution is evolved in time"""
     # TODO: This function got a bit messy, try to make it cleaner.
     # Dictionary of possible advection schemes, contains function plus information if it is centered in time
-    funcdict = {'FTCS': [ftcs, False], 'FTBS': [ftbs, False], "CTCS": [ctcs, True], "BTCS": [btcs, False]}
+    funcdict = {'FTCS': [ftcs, False], 'FTBS': [ftbs, False], "CTCS": [ctcs, True], "BTCS": [btcs, False], "LaxWendroff":[lax_wendroff,False]}
 
     # choose the function for the desired advection scheme
     advection_scheme, centered_in_time = funcdict[advection_scheme_key]
@@ -89,7 +101,7 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
                 # iterate over observer list
                 for observer in observers:
                     # Function checks which observe we have and executes it
-                    observe(observer,u_grid, analyt_sol_array, 0)
+                    observe(observer, u_grid, analyt_sol_array, 0)
 
         # Actual time evolution
         for t in range(time_steps - 1):
@@ -104,7 +116,7 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
                 # iterate over observer list
                 for observer in observers:
                     # Function checks which observe we have and executes it
-                    observe(observer,u_grid, analyt_sol_array, t+1)
+                    observe(observer, u_grid, analyt_sol_array, t + 1)
 
     else:
         # Check if the Scheme is implicit/BTCS -> Calculate the inverse matrix
@@ -125,5 +137,5 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
                 # iterate over observer list
                 for observer in observers:
                     # Function checks which observe we have and executes it
-                    observe(observer,u_grid, analyt_sol_array, t)
+                    observe(observer, u_grid, analyt_sol_array, t)
     return u_grid
