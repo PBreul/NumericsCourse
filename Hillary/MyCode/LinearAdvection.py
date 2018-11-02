@@ -16,12 +16,12 @@ if __name__ == "__main__":
     # Setting initial values
     x_min = 0
     x_max = 20
-    grid_points = 100
-    time_steps = 5
+    grid_points = 200
+    time_steps = 200
 
     # Courant Parameter
     #c = np.float(sys.argv[1])
-    c = 0.3
+    c = 0.1
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # Evolving and Plotting. Could be over another list
     # If you want something different, than what this function does, implement it here "by hand"
 
-    for advection_scheme_key in ("BTCS",):
+    for advection_scheme_key in advection_scheme_key_list:
         # Iterate over all advection schemes
         # Call the time evolution, together with the Observers, which measure the quantities of interest while the
         # simulation is running
