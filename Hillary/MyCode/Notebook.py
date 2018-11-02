@@ -1,5 +1,5 @@
 import numpy as np
-
+import scipy
 a=np.arange(5)
 print(a)
 print(a**2)

@@ -4,7 +4,6 @@ import matplotlib.pyplot as plt
 import advection_schemes
 import Observers
 import os
-import sys
 
 # This script evolves the linear advection equation in time, with variable initial conditions and numerical schemes
 
@@ -12,17 +11,17 @@ if __name__ == "__main__":
     """This function is sets the initial conditions and evolves everything in time."""
 
     savingpath = "Plots/"
-    advection_scheme_key_list = ("FTCS", "BTCS", "CTCS", "FTBS","LaxWendroff")
+    advection_scheme_key_list = ("FTCS", "BTCS", "CTCS", "FTBS","LaxWendroff", "SemiLagrangien")
 
     # Setting initial values
     x_min = 0
     x_max = 20
-    grid_points = 200
-    time_steps = 350
+    grid_points = 100
+    time_steps = 30
 
     # Courant Parameter
     #c = np.float(sys.argv[1])
-    c = 0.2
+    c = 1.3
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"
@@ -54,7 +53,7 @@ if __name__ == "__main__":
     # Evolving and Plotting. Could be over another list
     # If you want something different, than what this function does, implement it here "by hand"
 
-    for advection_scheme_key in advection_scheme_key_list:
+    for advection_scheme_key in ("SemiLagrangien",):
         # Iterate over all advection schemes
         # Call the time evolution, together with the Observers, which measure the quantities of interest while the
         # simulation is running
@@ -65,16 +64,14 @@ if __name__ == "__main__":
         axs[0].plot(x_grid, u_num_sol, label=advection_scheme_key)
         axs[1].semilogy(ErrorObserver.linf_array, label="$l_\inf$, " + advection_scheme_key)
         axs[1].semilogy(ErrorObserver.l2_array, label="$l_2$, " + advection_scheme_key)
-        axs[2].plot(MomentObserver.mass_array, label="Mass, "+advection_scheme_key)
-        axs[2].plot(MomentObserver.variance_array, label="Variance, " + advection_scheme_key)
+        axs[2].semilogy(MomentObserver.mass_array/MomentObserver.mass_array[0], label="Mass, "+advection_scheme_key)
+        #axs[2].semilogy(MomentObserver.variance_array/MomentObserver.variance_array[0], label="Variance, " + advection_scheme_key)
 
     axs[0].plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
 
     # Plot Settings
     axs[0].set_ylim(-0.1, 1.1)
     axs[1].set_ylim(0.01, 10)
-    #axs[2].set_ylim(np.sqrt(np.pi) - 0.01, np.sqrt(np.pi) + 0.03)
-    #axs[2].set_ylim(50,60)
 
     axs[0].set_xlabel("x")
     axs[0].set_ylabel("u")
@@ -83,7 +80,7 @@ if __name__ == "__main__":
     axs[1].set_ylabel("Error")
 
     axs[2].set_xlabel("# time steps")
-    axs[2].set_ylabel("Moment")
+    axs[2].set_ylabel("$V/V_0$")
 
     axs[0].legend()
     axs[1].legend()

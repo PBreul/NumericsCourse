@@ -18,12 +18,44 @@ def btcs_m_inv(length, c):
     return m_inv
 
 
-def semi_lagrangien(u_old, c, ):
-    pass
+def semi_lagrangien(u_old, c, *args):
+    """Time Step evolution for Semi-Lagrangien"""
+    # Semi Lagrangien follows the charchteristic curves, since along these curves the values are constant. The curve
+    # is given by x(n+1) = c(n) - c*dx. So for our new values Phi(x(n+1),n+1) = Phi(x(n),n) , we have to find the
+    # position of the characteristic of x at time step n. Since this is not necessarily on the grid (i.e. when c is
+    # not an integer), we have to interpolate the values using polynomial fitting.
+
+    from scipy.interpolate import lagrange
+
+    def pol_fit(y_array, x_array=np.array([-1, 0, 1, 2])):
+        """Returns a polynomial function, fitted to the the input array, in this case we do not care about spacing"""
+        return lagrange(x_array, y_array)
+
+    length = len(u_old)
+
+    # We are interested in shifts c*dx, since our arrays are given in dx spacing, the shift in "array-units" is c.
+    shift = c
+
+    # Shift whole array units (for c<1, no shift)
+    u_shift = np.roll(u_old, int(shift))
+    u_new = np.zeros(length)
+
+    # TODO:Should I try to vectorise this? Probably polynomial fitting takes much more time then looping anyways.
+    for i in range(length):
+        # Take four neighbouring points (could be more/less, for accuracy - computation time trade off), and fit an
+        # polynomial to it
+        y_array = np.array([u_shift[i - 1], u_shift[i], u_shift[(i + 1) % length], u_shift[(i + 2) % length]])
+        polynomial = pol_fit(y_array)
+
+        # Evaulate the polynomial at the old point of our characteristic curve
+        u_new[i] = polynomial(-(shift % 1))
+
+    return u_new
 
 
 def lax_wendroff(u_old, c, *args):
     """Time Step evolution for Lax Wendroff"""
+    # using np.roll() implies periodic boundary conditions.
     u_plus_one = np.roll(u_old, -1)
     u_minus_one = np.roll(u_old, 1)
     u_new = u_old - c / 2 * (u_plus_one - u_minus_one) + c ** 2 / 2 * (u_plus_one - 2 * u_old + u_minus_one)
@@ -77,7 +109,8 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
      In each step the distribution is evolved in time"""
     # TODO: This function got a bit messy, try to make it cleaner.
     # Dictionary of possible advection schemes, contains function plus information if it is centered in time
-    funcdict = {'FTCS': [ftcs, False], 'FTBS': [ftbs, False], "CTCS": [ctcs, True], "BTCS": [btcs, False], "LaxWendroff":[lax_wendroff,False]}
+    funcdict = {'FTCS': [ftcs, False], 'FTBS': [ftbs, False], "CTCS": [ctcs, True], "BTCS": [btcs, False],
+                "LaxWendroff": [lax_wendroff, False], "SemiLagrangien": [semi_lagrangien, False]}
 
     # choose the function for the desired advection scheme
     advection_scheme, centered_in_time = funcdict[advection_scheme_key]
