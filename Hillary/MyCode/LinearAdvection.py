@@ -22,7 +22,7 @@ if __name__ == "__main__":
 
     # Courant Parameter
     #c = np.float(sys.argv[1])
-    c = 0.7
+    c = 0.2
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"
@@ -37,7 +37,7 @@ if __name__ == "__main__":
 
     # Observers which monitor quantities of interest
     ErrorObserver = Observers.ErrorObserver(time_steps)
-    MomentObserver = Observers.MomentObserver(time_steps)
+    MomentObserver = Observers.MomentObserver(time_steps,dx)
 
     # Define a function for the analytical solution at different time steps, we can give this function later to
     # compare numerics to theory
@@ -65,14 +65,16 @@ if __name__ == "__main__":
         axs[0].plot(x_grid, u_num_sol, label=advection_scheme_key)
         axs[1].semilogy(ErrorObserver.linf_array, label="$l_\inf$, " + advection_scheme_key)
         axs[1].semilogy(ErrorObserver.l2_array, label="$l_2$, " + advection_scheme_key)
-        axs[2].plot(MomentObserver.mass_array * dx, label=advection_scheme_key)
+        axs[2].plot(MomentObserver.mass_array, label="Mass, "+advection_scheme_key)
+        axs[2].plot(MomentObserver.variance_array, label="Variance, " + advection_scheme_key)
 
     axs[0].plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
 
     # Plot Settings
     axs[0].set_ylim(-0.1, 1.1)
     axs[1].set_ylim(0.01, 10)
-    axs[2].set_ylim(np.sqrt(np.pi) - 0.01, np.sqrt(np.pi) + 0.03)
+    #axs[2].set_ylim(np.sqrt(np.pi) - 0.01, np.sqrt(np.pi) + 0.03)
+    #axs[2].set_ylim(50,60)
 
     axs[0].set_xlabel("x")
     axs[0].set_ylabel("u")
