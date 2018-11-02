@@ -30,13 +30,18 @@ def gauss_curve(x, x_0=None):
 def step_function(x, x_0=None):
     """Gives back a step function, if position x_0 of step not specified, take the middle. """
 
-    u_in = np.zeros(len(x))
-
     if x_0 is None:
         x_0 = np.mean(x)
 
-    idx = (np.abs(x - x_0)).argmin()
+    idmax = (np.abs(x - x_0)).argmin()
+    idmin = (idmax - len(x)//2 + 1)%len(x)
 
-    u_in[:idx] = 1
+    if idmax > idmin:
+        u_in = np.zeros(len(x))
+        u_in[idmin:idmax] = 1
+
+    else:
+        u_in = np.ones(len(x))
+        u_in[idmax:idmin] = 0
 
     return u_in

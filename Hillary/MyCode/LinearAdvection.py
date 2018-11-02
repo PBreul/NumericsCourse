@@ -17,11 +17,11 @@ if __name__ == "__main__":
     x_min = 0
     x_max = 20
     grid_points = 100
-    time_steps = 30
+    time_steps = 5
 
     # Courant Parameter
     #c = np.float(sys.argv[1])
-    c = 1.3
+    c = 0.3
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"
@@ -53,7 +53,7 @@ if __name__ == "__main__":
     # Evolving and Plotting. Could be over another list
     # If you want something different, than what this function does, implement it here "by hand"
 
-    for advection_scheme_key in ("SemiLagrangien",):
+    for advection_scheme_key in ("BTCS",):
         # Iterate over all advection schemes
         # Call the time evolution, together with the Observers, which measure the quantities of interest while the
         # simulation is running
@@ -64,14 +64,14 @@ if __name__ == "__main__":
         axs[0].plot(x_grid, u_num_sol, label=advection_scheme_key)
         axs[1].semilogy(ErrorObserver.linf_array, label="$l_\inf$, " + advection_scheme_key)
         axs[1].semilogy(ErrorObserver.l2_array, label="$l_2$, " + advection_scheme_key)
-        axs[2].semilogy(MomentObserver.mass_array/MomentObserver.mass_array[0], label="Mass, "+advection_scheme_key)
-        #axs[2].semilogy(MomentObserver.variance_array/MomentObserver.variance_array[0], label="Variance, " + advection_scheme_key)
+        axs[2].plot(MomentObserver.mass_array/MomentObserver.mass_array[0], label="Mass, "+advection_scheme_key)
+        axs[2].plot(MomentObserver.variance_array/MomentObserver.variance_array[0], label="Variance, " + advection_scheme_key)
 
     axs[0].plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
 
     # Plot Settings
     axs[0].set_ylim(-0.1, 1.1)
-    axs[1].set_ylim(0.01, 10)
+    axs[1].set_ylim(0.01, 2)
 
     axs[0].set_xlabel("x")
     axs[0].set_ylabel("u")

@@ -1,8 +1,9 @@
 import numpy as np
 import Observers
+from scipy.interpolate import lagrange
 
 
-def btcs_m_inv(length, c):
+def btcs_m(length, c):
     """Calculates the inverse matrix for the BTCS Scheme"""
 
     # Set up the matrix as in the notes p.30
@@ -12,10 +13,12 @@ def btcs_m_inv(length, c):
         m[i, i - 1] = -c / 2
         m[i, (i + 1) % length] = c / 2
 
-    # Numerically invert it
-    m_inv = np.linalg.inv(m)
+    return m
 
-    return m_inv
+
+def pol_fit(y_array, x_array=np.array([-2,-1, 0, 1])):
+    """Returns a polynomial function, fitted to the the input array, in this case we do not care about spacing"""
+    return lagrange(x_array, y_array)
 
 
 def semi_lagrangien(u_old, c, *args):
@@ -24,12 +27,6 @@ def semi_lagrangien(u_old, c, *args):
     # is given by x(n+1) = c(n) - c*dx. So for our new values Phi(x(n+1),n+1) = Phi(x(n),n) , we have to find the
     # position of the characteristic of x at time step n. Since this is not necessarily on the grid (i.e. when c is
     # not an integer), we have to interpolate the values using polynomial fitting.
-
-    from scipy.interpolate import lagrange
-
-    def pol_fit(y_array, x_array=np.array([-1, 0, 1, 2])):
-        """Returns a polynomial function, fitted to the the input array, in this case we do not care about spacing"""
-        return lagrange(x_array, y_array)
 
     length = len(u_old)
 
@@ -44,7 +41,7 @@ def semi_lagrangien(u_old, c, *args):
     for i in range(length):
         # Take four neighbouring points (could be more/less, for accuracy - computation time trade off), and fit an
         # polynomial to it
-        y_array = np.array([u_shift[i - 1], u_shift[i], u_shift[(i + 1) % length], u_shift[(i + 2) % length]])
+        y_array = np.array([u_shift[i - 2], u_shift[i-1], u_shift[i], u_shift[(i + 1) % length]])
         polynomial = pol_fit(y_array)
 
         # Evaulate the polynomial at the old point of our characteristic curve
@@ -88,7 +85,7 @@ def ctcs(u_old, c, u_old_old):
 
 def btcs(u_old, c, m_inv, *args):
     """Time Step evolution for CTCS"""
-    u_new = np.dot(m_inv, u_old)
+    u_new = np.linalg.solve(m_inv,u_old)
     return u_new
 
 
@@ -155,13 +152,13 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
         # Check if the Scheme is implicit/BTCS -> Calculate the inverse matrix
         # TODO: This could also be handled in a more elegant way
         if advection_scheme_key == "BTCS":
-            m_inv = btcs_m_inv(len(u_grid), c)
+            m = btcs_m(len(u_grid), c)
         else:
-            m_inv = None
+            m = None
 
         # Actual time evolution
         for t in range(time_steps):
-            u_grid = advection_scheme(u_grid, c, m_inv)
+            u_grid = advection_scheme(u_grid, c, m)
 
             # If we have observers, execute them
             if observers is not None:

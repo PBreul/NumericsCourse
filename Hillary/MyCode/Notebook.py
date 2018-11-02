@@ -1,6 +1,5 @@
 import numpy as np
 import scipy
-a=np.arange(5)
+a=np.arange(10)
+a[5:9]=0
 print(a)
-print(a**2)
-print( np.sum(a**2))
