@@ -17,11 +17,11 @@ if __name__ == "__main__":
     x_min = 0
     x_max = 20
     grid_points = 200
-    time_steps = 200
+    time_steps = 100
 
     # Courant Parameter
     #c = np.float(sys.argv[1])
-    c = 0.1
+    c = 0.2
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
     init_curve = "gauss"

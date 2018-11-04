@@ -104,68 +104,48 @@ def observe(observer, u_grid, analytical_sol_array, t):
 def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solution_function, observers=None):
     """This function calles the chosen advection routine over and over again until the number of time steps is reached.
      In each step the distribution is evolved in time"""
-    # TODO: This function got a bit messy, try to make it cleaner.
-    # Dictionary of possible advection schemes, contains function plus information if it is centered in time
-    funcdict = {'FTCS': [ftcs, False], 'FTBS': [ftbs, False], "CTCS": [ctcs, True], "BTCS": [btcs, False],
-                "LaxWendroff": [lax_wendroff, False], "SemiLagrangien": [semi_lagrangien, False]}
+
+    # Dictionary of possible advection schemes, contains function plus information what kind of scheme this is
+    # case 0: centered in time, so velocity at time "n-1" is needed for the advection scheme
+    # case 1: Implicit Scheme
+    # case 2: Everything else, for now can be treated the same way
+    funcdict = {'FTCS': [ftcs, 2], 'FTBS': [ftbs, 2], "CTCS": [ctcs, 0], "BTCS": [btcs, 1],
+                "LaxWendroff": [lax_wendroff, 2], "SemiLagrangien": [semi_lagrangien, 2]}
 
     # choose the function for the desired advection scheme
-    advection_scheme, centered_in_time = funcdict[advection_scheme_key]
+    advection_scheme, advection_scheme_case = funcdict[advection_scheme_key]
 
-    # If the sheme is centered in time, we have to save the array of the last time step and give it to the advection
-    #  scheme.
-    # TODO: Find a nicer solution for this problem
+    # Do the time evolution in a loop, check which kind of scheme we have. This way is computationally a little bit
+    # slower, since we have to check each tome which case we have, but the code is much more clearer.
 
-    # Do the time evolution in a loop
-    if centered_in_time is True:
+    for t in range(time_steps):
 
-        # We have to do one step with a forward in time scheme before we can use centered in time.
-        if time_steps > 0:
-            u_old_old = u_grid
-            u_grid = ftcs(u_grid, c)
+        if advection_scheme_case == 0:
+            # We have to do one step with a forward in time scheme before we can use centered in time.
+            if t == 0:
+                u_old_old = u_grid
+                u_grid = ftcs(u_grid, c)
+            else:
+                u_new = advection_scheme(u_grid, c, u_old_old)
+                u_old_old = u_grid.copy()
+                u_grid = u_new.copy()
 
-            # If we have observers, execute them
-            if observers is not None:
-                analyt_sol_array = analytical_solution_function(1)
-
-                # iterate over observer list
-                for observer in observers:
-                    # Function checks which observe we have and executes it
-                    observe(observer, u_grid, analyt_sol_array, 0)
-
-        # Actual time evolution
-        for t in range(time_steps - 1):
-
-            u_new = advection_scheme(u_grid, c, u_old_old)
-            u_old_old = u_grid.copy()
-            u_grid = u_new.copy()
-
-            # If we have observers, execute them
-            if observers is not None:
-                analyt_sol_array = analytical_solution_function(t + 2)
-                # iterate over observer list
-                for observer in observers:
-                    # Function checks which observe we have and executes it
-                    observe(observer, u_grid, analyt_sol_array, t + 1)
-
-    else:
-        # Check if the Scheme is implicit/BTCS -> Calculate the inverse matrix
-        # TODO: This could also be handled in a more elegant way
-        if advection_scheme_key == "BTCS":
-            m = btcs_m(len(u_grid), c)
-        else:
-            m = None
-
-        # Actual time evolution
-        for t in range(time_steps):
+        elif advection_scheme_case == 1:
+            # For now this is only the BTCS scheme, if more implicit schmes, think of something else.
+            if t == 0:
+                m = btcs_m(len(u_grid), c)
             u_grid = advection_scheme(u_grid, c, m)
 
-            # If we have observers, execute them
-            if observers is not None:
-                analyt_sol_array = analytical_solution_function(t + 1)
+        elif advection_scheme_case == 2:
+            u_grid = advection_scheme(u_grid, c)
 
-                # iterate over observer list
-                for observer in observers:
-                    # Function checks which observe we have and executes it
-                    observe(observer, u_grid, analyt_sol_array, t)
+        # Now check if we want to monitor something in during the simulation run
+        if observers is not None:
+            analyt_sol_array = analytical_solution_function(t + 1)
+
+            # iterate over observer list
+            for observer in observers:
+                # Function checks which observe we have and executes it
+                observe(observer, u_grid, analyt_sol_array, t)
+
     return u_grid
