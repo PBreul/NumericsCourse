@@ -40,6 +40,7 @@ This can then be written down as a matrix equation
 \end{align}
 We can solve for the solution at $n+1$ by either multiplying by $M^{-1}$, or solving the system of linear equations (numerically advantageous).
 \subsection{Semi Lagrangien}
+The semi Lagrangien scheme is not a finite difference scheme but introduces some analytical knowledge about the solution. We know, that the solution is constant along certain lines, the so called charachteristics $x(t) = ut+x_0$, with $x_0$ the spatial coordinate at time zero. This is reflected in the analytical solution, as one can see when plugging the charachteristic into  \cref{eq:analytical_sol}. That means that  our solution at $\rho_j^{n+1}$ is the same as at the solution at time step $n$ and spatial coordinate $j\Delta x -u\Delta t$ or rewritten $(j-c)\Delta x$. Since this quantity is not necessarily a scalar, it might not be resolved by the solution at time step $n$. The numerical solution thus has to interpolate the quantity $\rho_{j-c}^n$ by its neighbouring elements, e.g.  due to lagrangien interpolation with $\rho_{j-2}^n, \rho_{j-1}^n, \rho_{j}^n, \rho_{j+1}^n$. Taking more neighbours makes the interpolation better, but increases computational cost.
 \subsubsection{Properties of numerical schemes}
 \subsection{Stability}
 \subsubsection{Moment conservation}
