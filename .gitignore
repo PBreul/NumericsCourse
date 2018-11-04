@@ -4,6 +4,7 @@
 !*/
 # Whitelist the file you're interested in. 
 !*.py
-*.pyc 
-# WHitelist gitignore
+*.pyc
+!*.tex 
+# Whitelist gitignore
 !.gitignore

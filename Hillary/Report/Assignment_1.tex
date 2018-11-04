@@ -1,0 +1,39 @@
+\documentclass[11pt,a4paper,onecolumn]{article}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\numberwithin{equation}{section} %For numbering equations in format chapter.number
+\usepackage{amssymb}%math symbols
+\usepackage[mathscr]{euscript}
+%\usepackage[onehalfspacing]{setspace}
+\usepackage{bm}%fette Symbole(Vektoren)
+\usepackage{appendix}
+\usepackage{cleveref}
+\usepackage{graphicx}
+\usepackage{subfig}
+\usepackage{import} %for importing from other folder
+\usepackage{placeins} %Places Figures (FloatBarrier)
+\usepackage{mathtools}%dcases
+\usepackage{todonotes}
+\usepackage{cite}
+\usepackage{caption}
+\usepackage[margin=1in]{geometry} %For setting the paper boundaries
+\usepackage[export]{adjustbox}%Here used for aligning subfloats at the top
+\newcommand*{\HomePath}{}
+\usepackage{dsfont}
+
+\subimport{\HomePath}{commands.tex}
+
+\graphicspath {{Plots/}}
+
+\graphicspath {{\HomePath Plots/}}
+
+\captionsetup{labelfont=bf}
+\author{Philipp Breul}
+\title{Numerics Assignment}
+\begin{document}
+\maketitle
+In this report, we will take a look at different numerical schemes for solving the linear advection problem. We will analyse their properties and compare this to numerical simulation. \\ \\
+The first chapter will introduce the one-dimensional linear advection equation and very briefly discuss its analytical solution. In the second chapter we will introduce relevant properties of numerical schemes and give an overview properties various schemes possess. The third chapter will then compare this analysis to numerical results. 
+\input{Chapter2.tex}
+\input{Chapter3.tex}
+\end{document}

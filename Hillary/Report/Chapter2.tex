@@ -1,0 +1,13 @@
+\section{Linear Advection}\label{ch:linear_advection}
+In one dimension the linear advection equation takes the form 
+\begin{align}
+\partial_t\rho(x,t) + \partial_x(u \rho(x,t)) = 0.\label{eq:linear_advection}
+\end{align}
+With $\rho$ a quantity being advected by the velocity field $u(x,t)$, which in the following we will assume is $u(x,t)\rightarrow u$ a constant.\\
+Using the method of charachteristics, we can find an analytical solution for this equation, given by
+\begin{align}
+\rho(x,t) = \rho_0(x-ut),\quad \rho_0(x) = \rho(x,0).
+\end{align}
+Although having an analytical solution, we want to solve \cref{eq:linear_advection} numerically to compare the results with the known solution and thus judge their accuracy. \\
+For a numerical simulation we need to discretise our field $\rho(x,t)$ both in space and time, $\rho_j^n$, where two spatial points $\rho_j^n$ and $\rho_{j+1}^n$ are separated by $\Delta x$ and two points in time by $\Delta t$ respectively. A numerical scheme is then concerned with obtaining the solution $\rho_j^{n+1}$ at the next time point. For finite-difference methods  methods, this is done by approximating the derivatives in the pde with finite differences and then solving the equation for $\rho_j^{n+1}$ . Other classes of numerical schemes (e.g. the semi-Lagrangien) operate differently.\\
+The report and associated code assumes periodic boundary conditions, which means, that for $\rho_j^{n}$ with $j \in [0,1,... N] $ we have $\rho_{N+1}^n=\rho_0^n$ and $\rho_{-1}^n=\rho_N^n$.
