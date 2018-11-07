@@ -1,46 +1,46 @@
 \section{Numerical Schemes}
 In this chapter we will first take a look at three different schemes, the simple \textit{FTCS}-scheme, the implicit \textit{BTCS}-scheme and the more involved \textit{semi-Lagrangien} scheme. We will then introduce some desired properties of our numerical schemes and finally give an overview which scheme possesses which property.
 \subsection{FTCS}
-The Forward in Time Centered in Space (FTCS) is a finite-difference scheme, so as explained in \cref{ch:linear_advection}, we are concerned with discretising the derivatives with finite differences. This scheme approximates the temporal and spatial derivatives as
-\begin{align}
-\pder{\rho^n_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^n}{\Delta t},\\
-\pder{\rho^n_j}{x}&=\frac{\rho_{j+1}^{n}-\rho_{j-1}^n}{2\Delta x}.
-\end{align}
-When plugging this into \cref{eq:linear_advection} and solving the resulting equation for $\rho^{n+1}_j$, we get
-\begin{align}					
-\rho^{n+1}_j = \rho_j^{n}-\frac c2\left(\rho^n_{j+1}-\rho_{j-1}^n\right),
-\end{align}
-with $c=\frac{u\Delta t}{\Delta x}$, the Courant number. It can be viewed as a non-dimensionalised velocity. So with the field $\rho$ at time step $n$, we can calculate $\rho$ at time step $n+1$.
+%The Forward in Time Centered in Space (FTCS) is a finite-difference scheme, so as explained in \cref{ch:linear_advection}, we are concerned with discretising the derivatives with finite differences. This scheme approximates the temporal and spatial derivatives as
+%\begin{align}
+%\pder{\rho^n_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^n}{\Delta t},\\
+%\pder{\rho^n_j}{x}&=\frac{\rho_{j+1}^{n}-\rho_{j-1}^n}{2\Delta x}.
+%\end{align}
+%When plugging this into \cref{eq:linear_advection} and solving the resulting equation for $\rho^{n+1}_j$, we get
+%\begin{align}					
+%\rho^{n+1}_j = \rho_j^{n}-\frac c2\left(\rho^n_{j+1}-\rho_{j-1}^n\right),
+%\end{align}
+%with $c=\frac{u\Delta t}{\Delta x}$, the Courant number. It can be viewed as a non-dimensionalised velocity. So with the field $\rho$ at time step $n$, we can calculate $\rho$ at time step $n+1$.
 \subsection{BTCS}
-The Backward in Time Centered in Space  (BTCS) is a finite-difference scheme as well. The derivatives approximate to
-\begin{align}
-\pder{\rho^{n+1}_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^{n}}{\Delta t},\\
-\pder{\rho^{n+1}_j}{x}&=\frac{\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}}{2\Delta x}.
-\end{align}
-Plugging this into equation \cref{eq:linear_advection} and solving for $\rho^{n+1}_j$, leaves us with
-\begin{align}
-\rho_j^{n+1}=\rho_j^n-\frac c2\left(\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}\right).\label{eq:BTCS}
-\end{align}
-This obviously poses a problem, since the solution at the next time step should not depend on itself. But we can solve  \cref{eq:BTCS} for $\rho_j^n$.
-This can then be written down as a matrix equation
-\begin{align}
-\bm M \begin{pmatrix}
-\rho^{n+1}_0\\
-\rho^{n+1}_1\\
-\vdots\\
-\rho^{n+1}_N\\
-\end{pmatrix}
-=
-\begin{pmatrix}
-\rho^{n}_0\\
-\rho^{n}_1\\
-\vdots\\
-\rho^{n}_N\\
-\end{pmatrix}
-\end{align}
-We can solve for the solution at $n+1$ by either multiplying by $M^{-1}$, or solving the system of linear equations (numerically advantageous).
+%The Backward in Time Centered in Space  (BTCS) is a finite-difference scheme as well. The derivatives approximate to
+%\begin{align}
+%\pder{\rho^{n+1}_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^{n}}{\Delta t},\\
+%\pder{\rho^{n+1}_j}{x}&=\frac{\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}}{2\Delta x}.
+%\end{align}
+%Plugging this into equation \cref{eq:linear_advection} and solving for $\rho^{n+1}_j$, leaves us with
+%\begin{align}
+%\rho_j^{n+1}=\rho_j^n-\frac c2\left(\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}\right).\label{eq:BTCS}
+%\end{align}
+%This obviously poses a problem, since the solution at the next time step should not depend on itself. But we can solve  \cref{eq:BTCS} for $\rho_j^n$.
+%This can then be written down as a matrix equation
+%\begin{align}
+%\bm M \begin{pmatrix}
+%\rho^{n+1}_0\\
+%\rho^{n+1}_1\\
+%\vdots\\
+%\rho^{n+1}_N\\
+%\end{pmatrix}
+%=
+%\begin{pmatrix}
+%\rho^{n}_0\\
+%\rho^{n}_1\\
+%\vdots\\
+%\rho^{n}_N\\
+%\end{pmatrix}
+%\end{align}
+%We can solve for the solution at $n+1$ by either multiplying by $M^{-1}$, or solving the system of linear equations (numerically advantageous).
 \subsection{Semi Lagrangien}
-The semi Lagrangien scheme is not a finite difference scheme but introduces some analytical knowledge about the solution. We know, that the solution is constant along certain lines, the so called charachteristics $x(t) = ut+x_0$, with $x_0$ the spatial coordinate at time zero. This is reflected in the analytical solution, as one can see when plugging the charachteristic into  \cref{eq:analytical_sol}. That means that  our solution at $\rho_j^{n+1}$ is the same as at the solution at time step $n$ and spatial coordinate $j\Delta x -u\Delta t$ or rewritten $(j-c)\Delta x$. Since this quantity is not necessarily a scalar, it might not be resolved by the solution at time step $n$. The numerical solution thus has to interpolate the quantity $\rho_{j-c}^n$ by its neighbouring elements, e.g.  due to lagrangien interpolation with $\rho_{j-2}^n, \rho_{j-1}^n, \rho_{j}^n, \rho_{j+1}^n$. Taking more neighbours makes the interpolation better, but increases computational cost.
+%The semi Lagrangien scheme is not a finite difference scheme but introduces some analytical knowledge about the solution. We know, that the %solution is constant along certain lines, the so called charachteristics $x(t) = ut+x_0$, with $x_0$ the spatial coordinate at time zero. This is reflected in the analytical solution, as one can see when plugging the charachteristic into  \cref{eq:analytical_sol}. That means that  our solution at $\rho_j^{n+1}$ is the same as at the solution at time step $n$ and spatial coordinate $j\Delta x -u\Delta t$ or rewritten $(j-c)\Delta x$. Since this quantity is not necessarily a scalar, it might not be resolved by the solution at time step $n$. The numerical solution thus has to interpolate the quantity $\rho_{j-c}^n$ by its neighbouring elements, e.g.  due to lagrangien interpolation with $\rho_{j-2}^n, \rho_{j-1}^n, \rho_{j}^n, \rho_{j+1}^n$. Taking more neighbours makes the interpolation better, but increases computational cost.
 \subsection{Properties of numerical schemes}
 Introduce different properties which are relevant. State how you would analyse analaytically the behaviour of a scheme.
 \subsubsection{Stability}
