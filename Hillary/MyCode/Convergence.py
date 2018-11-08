@@ -13,6 +13,8 @@ import os
 # Define a function for the analytical solution at different time steps, we can give this function later to
 # compare numerics to theory
 
+# Better don't run this with SemiLagrangien, since it is too computationally expensive in the current implementation.
+
 def analytical_solution(x_grid, c, dx, t, init_curve, parameter_initial_cond):
     """Returns the analytical solution to the linear advection problem"""
     analytical = setup.initial_condition((x_grid - c * t * dx) % (x_max - x_min), init_curve, parameter_initial_cond)

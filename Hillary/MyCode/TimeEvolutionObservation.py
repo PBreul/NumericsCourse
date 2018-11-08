@@ -40,6 +40,7 @@ if __name__ == "__main__":
     ErrorObserver = Observers.ErrorObserver(time_steps)
     MomentObserver = Observers.MomentObserver(time_steps, dx)
 
+
     # Define a function for the analytical solution at different time steps, we can give this function later to
     # compare numerics to theory
 
@@ -67,7 +68,7 @@ if __name__ == "__main__":
         print("Time", str(advection_scheme_key), t2 - t1)
         # Plot the solution at last time step, the two error norms and the mass over time step
         axs0.plot(x_grid, u_num_sol, label=advection_scheme_key)
-        #axs1.semilogy(ErrorObserver.linf_array, label="$l_\infty$, " + advection_scheme_key)
+        # axs1.semilogy(ErrorObserver.linf_array, label="$l_\infty$, " + advection_scheme_key)
         axs1.semilogy(ErrorObserver.l2_array, label="$l_2$, " + advection_scheme_key)
         axs2.plot((MomentObserver.mass_array - MomentObserver.mass_array[0]) / MomentObserver.mass_array[0],
                   label="Mass, " + advection_scheme_key)
@@ -75,6 +76,8 @@ if __name__ == "__main__":
                   label="Variance, " + advection_scheme_key)
 
     axs0.plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
+    axs2.plot(np.arange(time_steps), np.zeros(time_steps), "--", color="black")
+    axs3.plot(np.arange(time_steps), np.zeros(time_steps), "--", color="black")
 
     # Plot Settings
     axs0.set_ylim(-0.1, 1.3)
@@ -97,13 +100,12 @@ if __name__ == "__main__":
     axs2.legend()
     axs3.legend()
 
-    #axs3.ticklabel_format(axis="y", style="sci")
-    #axs3.ticklabel_format(axis="y", style="sci")
+    plt.ticklabel_format(style='sci', axis='both', scilimits=(0, 0), useOffset=False)
 
     plt.suptitle("c={}, dx={}".format(c, dx), y=0.9)
 
     if not os.path.exists(savingpath):
         os.makedirs(savingpath)
     # Save Plot
-    plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
+    # plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
     plt.show()
