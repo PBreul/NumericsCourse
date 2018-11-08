@@ -7,6 +7,7 @@ import os
 import time
 
 # This script evolves the linear advection equation in time, with variable initial conditions and numerical schemes
+# It can monitor errors and mass as they evolve over time
 
 if __name__ == "__main__":
     """This function is sets the initial conditions and evolves everything in time."""
