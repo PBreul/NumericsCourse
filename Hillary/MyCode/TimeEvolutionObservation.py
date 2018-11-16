@@ -27,7 +27,7 @@ if __name__ == "__main__":
     c = 0.2
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
-    init_curve = "gauss"
+    init_curve = "step"
     # some parameter for the initial condition, e.g. the center of a gaussian curve, if None, center is automatically
     parameter_initial_cond = None
 
@@ -40,6 +40,7 @@ if __name__ == "__main__":
     # Observers which monitor quantities of interest
     ErrorObserver = Observers.ErrorObserver(time_steps)
     MomentObserver = Observers.MomentObserver(time_steps, dx)
+
 
     # Define a function for the analytical solution at different time steps, we can give this function later to
     # compare numerics to theory
@@ -79,11 +80,11 @@ if __name__ == "__main__":
 
         axs2.plot((MomentObserver.mass_array - MomentObserver.mass_array[0]) / MomentObserver.mass_array[0],
                   color=plot_color,
-                  label="Mass, " + advection_scheme_key)
+                  label= advection_scheme_key)
 
         axs3.plot((MomentObserver.variance_array - MomentObserver.variance_array[0]) / MomentObserver.variance_array[0],
                   color=plot_color,
-                  label="Variance, " + advection_scheme_key)
+                  label= advection_scheme_key)
 
     axs0.plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
     axs2.plot(np.arange(time_steps), np.zeros(time_steps), "--", color="black")
@@ -94,7 +95,7 @@ if __name__ == "__main__":
     axs1.set_ylim(0.01, 2)
 
     axs0.set_xlabel("x")
-    axs0.set_ylabel(r"$\Phi")
+    axs0.set_ylabel(r"$\rho$")
 
     axs1.set_xlabel("# time steps")
     axs1.set_ylabel("Error")
@@ -112,12 +113,12 @@ if __name__ == "__main__":
 
     plt.ticklabel_format(style='sci', axis='both', scilimits=(0, 0), useOffset=False)
 
-    plt.suptitle("c={}, dx={}".format(c, dx), y=0.9)
+    plt.suptitle("c={}, dx={}".format(c, dx), y=0.91)
 
     if not os.path.exists(savingpath):
         os.makedirs(savingpath)
     # Save Plot
-    savingname = savingpath + "c{}dx{}.pdf".format(c, dx)
-    savingname = savingname.replace(".", "_")
-    plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
+    savingname = savingpath + init_curve + "_c{}dx{}".format(c, dx)
+    savingname = savingname.replace(".", "_")+".pdf"
+    plt.savefig(savingname, bbox_inches="tight")
     plt.show()

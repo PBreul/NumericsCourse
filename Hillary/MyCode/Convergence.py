@@ -102,8 +102,8 @@ if __name__ == "__main__":
     if not os.path.exists(savingpath):
         os.makedirs(savingpath)
     # Save Plot
-    savingname = savingpath + "OrderAccuracy_c{}.pdf".format(c)
-    savingname = savingname.replace(".","_")
+    savingname = savingpath + "OrderAccuracy_c{}".format(c)
+    savingname = savingname.replace(".","_")+".pdf"
     plt.savefig(savingname, bbox_inches="tight")
 
     plt.show()
