@@ -1,10 +1,11 @@
 \section{Numerical Experiments}
-\subsection{Experiment Design}
-I will monitor $l_2$ and $l_\infty$ error over time(steps) for different courant number and different initial conditions. 
-This is supposed to test the stability of the scheme for different courant numbers. But also the accuracy of the different schemes.\\ \\
-Also the mean and variance of the advected quantity will be measured to see if the scheme preserves these quantities. \\ \\
-Numerical diffusion will be tested by visually looking at the results. \\ \\
-The same for numerical dispersion, here we will use a non-continuous initial condition to provoke numerical dispersion, it will be judged visually. \\ \\
-The computational cost will be judged by timing the algorithm. Not completely reliable, since code might not be optimal for some schemes. 
+\subsubsection{Experimental Design}
+We will use two main experiments to analyse the properties of our numerical schemes introduced above. \\
+First we we simply simply evolve our initial condition in time and meanwhile monitor mass, variance and $l_2$-error at every time step. 
+With this we can test multiple properties. First, we can obviously test, if a scheme is mass and variance preserving. But we also know, that a diffusive scheme reduces the variance\todo{Find Citation}. So together with a visual test of the advection, we can judge if a scheme has numerical diffusion. \\
+The error over time gives us information about the stability of the scheme, if it stays bounded, the scheme is stable. \\
+We will vary the Courant number in order to see when conditionally stable schemes become unstable. We will also use different initial conditions (smooth and discontinuous).\\ \\
+The second experiment is supposed to test accuracy of the schemes. We want to investigate the error depending on the discretisation $\Delta x$. When adjusting the number of grid points, we have to adjust the number of time steps accordingly, so that the quotient of the two is constant. We have to do that so that the  Courant number stays fixed for same velocity field $u$. \\
+We take the $l_2$-error at the end of each run and plot it against the discretisation to see how the error scales.
 \subsection{Results}
 Here come the results.
