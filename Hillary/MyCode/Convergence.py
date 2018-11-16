@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import advection_schemes
 import diagnostics
 import os
+import itertools
 
 
 # This script evolves the linear advection equation in time, with variable initial conditions and numerical schemes
@@ -26,11 +27,12 @@ if __name__ == "__main__":
 
     savingpath = "Plots/"
     advection_scheme_key_list = ("FTCS", "BTCS", "CTCS", "FTBS", "LaxWendroff", "SemiLagrangien")
+    color_dic = {"FTCS": "C0", "BTCS": "C1", "CTCS": "C2", "FTBS": "C3", "LaxWendroff": "C4", "SemiLagrangien": "C5"}
 
     # Setting initial values
     x_min = 0
     x_max = 20
-
+    spatial_domain = x_max - x_min
     # Courant Parameter
     # c = np.float(sys.argv[1])
     c = 0.2
@@ -41,24 +43,27 @@ if __name__ == "__main__":
     parameter_initial_cond = None
 
     # Array for number of gridpoints
-    gridpoint_array = np.arange(50, 1000, 50)
+    gridpoint_array = np.arange(50, 1000, 100)
 
     # We have to keep the courant number constant, so number of time steps has to scale with number of grid points
     nt_array = gridpoint_array
     # array of discritisations
-    dx_array = (x_max - x_min) / gridpoint_array
+    dx_array = spatial_domain / gridpoint_array
+    scaled_dx_array = dx_array / spatial_domain
 
     # initialise error array
     error_array = np.zeros(len(dx_array))
 
-    # Saving the errors
+    # Saving the errors in this dictionary if needed later
     error_dict = {"FTCS": None, "BTCS": None, "CTCS": None, "FTBS": None, "LaxWendroff": None, "SemiLagrangien": None}
+
+    # List of markers to use for plotting
+    marker = itertools.cycle(('^', '+', 'o', '.', '*'))
 
     # Do this for the following schemes
     for advection_scheme_key in ("FTCS", "BTCS", "CTCS", "FTBS", "LaxWendroff"):
 
         for i, (dx, time_steps) in enumerate(zip(dx_array, nt_array)):
-
             # set up discretisation grid
             x_grid = np.arange(x_min, x_max, dx)
 
@@ -73,28 +78,32 @@ if __name__ == "__main__":
                                                          analytical_solution)
             # calculate l2 error norm
             error_array[i] = diagnostics.l2_error_norm(u_num_sol, u_analytic_sol)
+
         error_dict[advection_scheme_key] = error_array.copy()
         # plot the error against the discretisation dx for this scheme
-        plt.loglog(dx_array, error_array, ".-", label=advection_scheme_key)
+        plt.loglog(scaled_dx_array, error_array, ".-", color=color_dic[advection_scheme_key],marker=next(marker), label=advection_scheme_key)
 
     # Plotting adjustments
 
-    plt.xlabel(r"$\Delta x$")
+    plt.xlabel(r"$\Delta x$/X")
     plt.ylabel(r"$l_2$")
 
     # Plot comparing power laws, which are normed to the error of corresponding schemes at smallest dx (-1 because dx
     #  is decreasing)
-    plt.loglog(dx_array, dx_array / dx_array[-1] * error_dict["BTCS"][-1], "--", label=r"$\sim\Delta x^1$")
+    plt.loglog(scaled_dx_array, scaled_dx_array / scaled_dx_array[-1] * error_dict["BTCS"][-1], "--", label=r"$\sim\Delta x^1$")
 
-    plt.loglog(dx_array, dx_array / dx_array[-1] * error_dict["FTBS"][-1], "--", label=r"$\sim\Delta x^1$")
+    plt.loglog(scaled_dx_array, scaled_dx_array / scaled_dx_array[-1] * error_dict["FTBS"][-1], "--", label=r"$\sim\Delta x^1$")
 
-    plt.loglog(dx_array, dx_array ** 2 / dx_array[-1] ** 2 * error_dict["LaxWendroff"][-1], "--", label=r"$\sim\Delta x^2$", color="black")
+    plt.loglog(scaled_dx_array, scaled_dx_array ** 2 / scaled_dx_array[-1] ** 2 * error_dict["LaxWendroff"][-1], "--",
+               label=r"$\sim\Delta x^2$", color="black")
 
     plt.legend(title="c={}".format(c))
 
     if not os.path.exists(savingpath):
         os.makedirs(savingpath)
     # Save Plot
-    plt.savefig(savingpath + "OrderAccuracy" "c{}.pdf".format(c), bbox_inches="tight")
+    savingname = savingpath + "OrderAccuracy_c{}.pdf".format(c)
+    savingname = savingname.replace(".","_")
+    plt.savefig(savingname, bbox_inches="tight")
 
     plt.show()

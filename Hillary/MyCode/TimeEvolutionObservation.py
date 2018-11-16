@@ -14,12 +14,13 @@ if __name__ == "__main__":
 
     savingpath = "Plots/"
     advection_scheme_key_list = ("FTCS", "BTCS", "CTCS", "FTBS", "LaxWendroff", "SemiLagrangien")
+    color_dic = {"FTCS": "C0", "BTCS": "C1", "CTCS": "C2", "FTBS": "C3", "LaxWendroff": "C4", "SemiLagrangien": "C5"}
 
     # Setting initial values
     x_min = 0
     x_max = 20
     grid_points = 200
-    time_steps = 50
+    time_steps = 150
 
     # Courant Parameter
     # c = np.float(sys.argv[1])
@@ -40,7 +41,6 @@ if __name__ == "__main__":
     ErrorObserver = Observers.ErrorObserver(time_steps)
     MomentObserver = Observers.MomentObserver(time_steps, dx)
 
-
     # Define a function for the analytical solution at different time steps, we can give this function later to
     # compare numerics to theory
 
@@ -52,27 +52,37 @@ if __name__ == "__main__":
 
     u_analytic_sol = analytical_solution(time_steps)
 
+    plt.rcParams.update({'font.size': 14})
     fig, ((axs0, axs1), (axs2, axs3)) = plt.subplots(nrows=2, ncols=2, figsize=(14, 10))
 
     # Evolving and Plotting. Could be over another list
     # If you want something different, than what this function does, implement it here "by hand"
 
-    for advection_scheme_key in ("FTCS", "BTCS", "CTCS", "FTBS", "LaxWendroff"):
+    for advection_scheme_key in ("FTCS", "BTCS", "FTBS", "LaxWendroff", "CTCS"):
         # Iterate over all advection schemes
         # Call the time evolution, together with the Observers, which measure the quantities of interest while the
         # simulation is running
+
+        plot_color = color_dic[advection_scheme_key]
+
         t1 = time.time()
         u_num_sol = advection_schemes.time_evolution(u_init, time_steps, c, advection_scheme_key, analytical_solution,
                                                      [ErrorObserver, MomentObserver])
         t2 = time.time()
         print("Time", str(advection_scheme_key), t2 - t1)
-        # Plot the solution at last time step, the two error norms and the mass over time step
-        axs0.plot(x_grid, u_num_sol, label=advection_scheme_key)
+
+        # Plot the solution at last time step, the two error norms, the mass and variance over time step
+        axs0.plot(x_grid, u_num_sol, color=plot_color, label=advection_scheme_key)
+
         # axs1.semilogy(ErrorObserver.linf_array, label="$l_\infty$, " + advection_scheme_key)
-        axs1.semilogy(ErrorObserver.l2_array, label="$l_2$, " + advection_scheme_key)
+        axs1.semilogy(ErrorObserver.l2_array, color=plot_color, label="$l_2$, " + advection_scheme_key)
+
         axs2.plot((MomentObserver.mass_array - MomentObserver.mass_array[0]) / MomentObserver.mass_array[0],
+                  color=plot_color,
                   label="Mass, " + advection_scheme_key)
+
         axs3.plot((MomentObserver.variance_array - MomentObserver.variance_array[0]) / MomentObserver.variance_array[0],
+                  color=plot_color,
                   label="Variance, " + advection_scheme_key)
 
     axs0.plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
@@ -84,7 +94,7 @@ if __name__ == "__main__":
     axs1.set_ylim(0.01, 2)
 
     axs0.set_xlabel("x")
-    axs0.set_ylabel("u")
+    axs0.set_ylabel(r"$\Phi")
 
     axs1.set_xlabel("# time steps")
     axs1.set_ylabel("Error")
@@ -107,5 +117,7 @@ if __name__ == "__main__":
     if not os.path.exists(savingpath):
         os.makedirs(savingpath)
     # Save Plot
-    # plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
+    savingname = savingpath + "c{}dx{}.pdf".format(c, dx)
+    savingname = savingname.replace(".", "_")
+    plt.savefig(savingpath + "c{}dx{}.pdf".format(c, dx), bbox_inches="tight")
     plt.show()
