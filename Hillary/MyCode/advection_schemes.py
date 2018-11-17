@@ -37,7 +37,7 @@ def semi_lagrangien(u_old, c, *args):
     u_shift = np.roll(u_old, int(shift))
     u_new = np.zeros(length)
 
-    # TODO:Should I try to vectorise this? Probably polynomial fitting takes much more time then looping anyways.
+    # TODO:Polynomial Fitting takes up 95% of computational time, function does not seem optimal.
     for i in range(length):
         # Take four neighbouring points (could be more/less, for accuracy - computation time trade off), and fit an
         # polynomial to it
@@ -139,7 +139,7 @@ def time_evolution(u_grid, time_steps, c, advection_scheme_key, analytical_solut
         elif advection_scheme_case == 2:
             u_grid = advection_scheme(u_grid, c)
 
-        # Now check if we want to monitor something in during the simulation run
+        # Now check if we want to monitor something during the simulation run
         if observers is not None:
             analyt_sol_array = analytical_solution_function(t + 1)
 

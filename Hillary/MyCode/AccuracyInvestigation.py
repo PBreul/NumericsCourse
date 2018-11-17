@@ -61,7 +61,7 @@ if __name__ == "__main__":
     marker = itertools.cycle(('^', '+', 'o', '.', '*'))
 
     # Do this for the following schemes
-    for advection_scheme_key in ("FTCS", "BTCS", "CTCS", "FTBS", "LaxWendroff"):
+    for advection_scheme_key in ("BTCS", "FTBS", "LaxWendroff"):
 
         for i, (dx, time_steps) in enumerate(zip(dx_array, nt_array)):
             # set up discretisation grid
@@ -92,7 +92,7 @@ if __name__ == "__main__":
     #  is decreasing)
     plt.loglog(scaled_dx_array, scaled_dx_array / scaled_dx_array[-1] * error_dict["BTCS"][-1], "--", label=r"$\sim\Delta x^1$")
 
-    plt.loglog(scaled_dx_array, scaled_dx_array / scaled_dx_array[-1] * error_dict["FTBS"][-1], "--", label=r"$\sim\Delta x^1$")
+    plt.loglog(scaled_dx_array, scaled_dx_array / scaled_dx_array[-1] * error_dict["FTBS"][-1], "--", label=r"$\sim\Delta x^1$", color = "C2")
 
     plt.loglog(scaled_dx_array, scaled_dx_array ** 2 / scaled_dx_array[-1] ** 2 * error_dict["LaxWendroff"][-1], "--",
                label=r"$\sim\Delta x^2$", color="black")
@@ -106,4 +106,4 @@ if __name__ == "__main__":
     savingname = savingname.replace(".","_")+".pdf"
     plt.savefig(savingname, bbox_inches="tight")
 
-    plt.show()
+    # plt.show()

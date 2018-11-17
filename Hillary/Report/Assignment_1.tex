@@ -23,9 +23,9 @@
 
 \subimport{\HomePath}{commands.tex}
 
-%\graphicspath {{../MyCode/Plots/}}
+\graphicspath {{../MyCode/Plots/}}
 
-\graphicspath {{\HomePath Plots/}}
+%\graphicspath {{\HomePath Plots/}}
 
 \captionsetup{labelfont=bf}
 \author{Philipp Breul}
@@ -39,12 +39,6 @@ The first chapter will introduce the one-dimensional linear advection equation a
 \input{Chapter4.tex}
 \input{Chapter5.tex}
 \FloatBarrier
-\begin{figure}
-\centering
-\includegraphics[width=0.92\linewidth]{step_c0_2dx0_1.pdf}
-\caption{Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum }
-
-\includegraphics[width=0.92\linewidth]{step_c0_2dx0_1.pdf}
-\caption{Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum Lorem Ipsum }
-\end{figure}
+\bibliography{mybib}{}
+\bibliographystyle{plain}
 \end{document}

@@ -1,5 +1,5 @@
 \section{Numerical Experiments}
-\subsubsection{Experimental Design}
+\subsection{Experimental Design}
 We will use two main experiments to analyse the properties of our numerical schemes introduced above. \\
 First we we simply simply evolve our initial condition in time and meanwhile monitor mass, variance and $l_2$-error at every time step. 
 With this we can test multiple properties. First, we can obviously test, if a scheme is mass and variance preserving. But we also know, that a diffusive scheme reduces the variance\todo{Find Citation}. So together with a visual test of the advection, we can judge if a scheme has numerical diffusion. \\
@@ -8,4 +8,20 @@ We will vary the Courant number in order to see when conditionally stable scheme
 The second experiment is supposed to test accuracy of the schemes. We want to investigate the error depending on the discretisation $\Delta x$. When adjusting the number of grid points, we have to adjust the number of time steps accordingly, so that the quotient of the two is constant. We have to do that so that the  Courant number stays fixed for same velocity field $u$. \\
 We take the $l_2$-error at the end of each run and plot it against the discretisation to see how the error scales.
 \subsection{Results}
-Here come the results.
+\FloatBarrier
+\begin{figure}
+\centering
+\includegraphics[width = 0.9\textwidth]{gauss_c0_2dx0_16.pdf}
+\caption{}
+\includegraphics[width = 0.9\textwidth]{gauss_c1_4dx0_16.pdf}
+\caption{}
+\end{figure}
+\FloatBarrier
+\begin{figure}
+\centering
+\includegraphics[width = 0.9\textwidth]{step_c0_2dx0_08.pdf}
+\caption{}
+\includegraphics[width = 0.6\textwidth]{OrderAccuracy_c0_2.pdf}
+\caption{}
+\end{figure}
+\FloatBarrier

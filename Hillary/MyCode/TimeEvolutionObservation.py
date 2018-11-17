@@ -5,6 +5,7 @@ import advection_schemes
 import Observers
 import os
 import time
+import sys
 
 # This script evolves the linear advection equation in time, with variable initial conditions and numerical schemes
 # It can monitor errors and mass as they evolve over time
@@ -19,15 +20,21 @@ if __name__ == "__main__":
     # Setting initial values
     x_min = 0
     x_max = 20
-    grid_points = 200
-    time_steps = 150
+
+    grid_points = np.int(sys.argv[1])
+    # grid_points = 250
+
+    time_steps = np.int(sys.argv[2])
+    # time_steps = 250
 
     # Courant Parameter
-    # c = np.float(sys.argv[1])
-    c = 0.2
+    c = np.float(sys.argv[3])
+    # c = 0.2
 
     # Key word for the initial value. Possible arguments have to match input of initial conditions function
-    init_curve = "step"
+    # init_curve = "step"
+    init_curve = sys.argv[4]
+
     # some parameter for the initial condition, e.g. the center of a gaussian curve, if None, center is automatically
     parameter_initial_cond = None
 
@@ -40,7 +47,6 @@ if __name__ == "__main__":
     # Observers which monitor quantities of interest
     ErrorObserver = Observers.ErrorObserver(time_steps)
     MomentObserver = Observers.MomentObserver(time_steps, dx)
-
 
     # Define a function for the analytical solution at different time steps, we can give this function later to
     # compare numerics to theory
@@ -59,7 +65,7 @@ if __name__ == "__main__":
     # Evolving and Plotting. Could be over another list
     # If you want something different, than what this function does, implement it here "by hand"
 
-    for advection_scheme_key in ("FTCS", "BTCS", "FTBS", "LaxWendroff", "CTCS"):
+    for advection_scheme_key in ("FTBS", "BTCS", "LaxWendroff"):
         # Iterate over all advection schemes
         # Call the time evolution, together with the Observers, which measure the quantities of interest while the
         # simulation is running
@@ -92,13 +98,14 @@ if __name__ == "__main__":
 
     # Plot Settings
     axs0.set_ylim(-0.1, 1.3)
-    axs1.set_ylim(0.01, 2)
+    axs3.set_ylim(-0.01,0.01)
 
     axs0.set_xlabel("x")
     axs0.set_ylabel(r"$\rho$")
 
     axs1.set_xlabel("# time steps")
     axs1.set_ylabel("Error")
+
 
     axs2.set_xlabel("# time steps")
     axs2.set_ylabel("$(M-M_0)/M_0$")
@@ -121,4 +128,4 @@ if __name__ == "__main__":
     savingname = savingpath + init_curve + "_c{}dx{}".format(c, dx)
     savingname = savingname.replace(".", "_")+".pdf"
     plt.savefig(savingname, bbox_inches="tight")
-    plt.show()
+    # plt.show()

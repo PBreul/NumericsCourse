@@ -1,46 +1,56 @@
 \section{Numerical Schemes}
-In this chapter we will first take a look at three different schemes, the simple \textit{FTCS}-scheme, the implicit \textit{BTCS}-scheme and the more involved \textit{semi-Lagrangien} scheme. We will then introduce some desired properties of our numerical schemes and finally give an overview which scheme possesses which property.
-\subsection{FTCS}
-%The Forward in Time Centered in Space (FTCS) is a finite-difference scheme, so as explained in \cref{ch:linear_advection}, we are concerned with discretising the derivatives with finite differences. This scheme approximates the temporal and spatial derivatives as
-%\begin{align}
-%\pder{\rho^n_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^n}{\Delta t},\\
-%\pder{\rho^n_j}{x}&=\frac{\rho_{j+1}^{n}-\rho_{j-1}^n}{2\Delta x}.
-%\end{align}
-%When plugging this into \cref{eq:linear_advection} and solving the resulting equation for $\rho^{n+1}_j$, we get
-%\begin{align}					
-%\rho^{n+1}_j = \rho_j^{n}-\frac c2\left(\rho^n_{j+1}-\rho_{j-1}^n\right),
-%\end{align}
-%with $c=\frac{u\Delta t}{\Delta x}$, the Courant number. It can be viewed as a non-dimensionalised velocity. So with the field $\rho$ at time step $n$, we can calculate $\rho$ at time step $n+1$.
-\subsection{CTCS}
+In this chapter we will first take a look at three different schemes, the explicit \textit{FTBS}-scheme, the implicit \textit{BTCS}-scheme and the more involved Lax-Wendroff scheme. We will briefly describe the schemes, introduce their properties and explain why we chose these schemes. 
+\subsection{FTBS}
+The Forward in Time Backwards in Space (FTBS) is a finite-difference scheme, so as explained in \cref{ch:linear_advection}, we are concerned with discretising the derivatives with finite differences. This scheme approximates the temporal and spatial derivatives as
+\begin{align}
+\pder{\rho^n_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^{n}}{\Delta t},\\
+\pder{\rho^n_j}{x}&=\frac{\rho_{j}^{n}-\rho_{j-1}^n}{\Delta x}.
+\end{align}
+When plugging this into \cref{eq:linear_advection} and solving the resulting equation for $\rho^{n+1}_j$, we get
+\begin{align}					
+\rho^{n+1}_j = \rho_j^{n}-c\left(\rho^n_{j}-\rho_{j-1}^n\right),
+\end{align}
+with $c=\frac{u\Delta t}{\Delta x}$, the Courant number. It can be viewed as a non-dimensionalised velocity. So with the field $\rho$ at time step $n$, we can calculate $\rho$ at time step $n+1$.\\ \\
+\textbf{Properties:} First order accurate,  stable for $0\leq c \leq 1$ and mass but not variance preserving. \cite[p. 26,55,57,58]{lec} \\ \\
+We chose this scheme since it is one of the simplest schemes. We want to see how more involved schemes improve on it.  Its disadvantage towards BTCS for example is that it is only conditionally stable.
 \subsection{BTCS}
-%The Backward in Time Centered in Space  (BTCS) is a finite-difference scheme as well. The derivatives approximate to
-%\begin{align}
-%\pder{\rho^{n+1}_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^{n}}{\Delta t},\\
-%\pder{\rho^{n+1}_j}{x}&=\frac{\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}}{2\Delta x}.
-%\end{align}
-%Plugging this into equation \cref{eq:linear_advection} and solving for $\rho^{n+1}_j$, leaves us with
-%\begin{align}
-%\rho_j^{n+1}=\rho_j^n-\frac c2\left(\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}\right).\label{eq:BTCS}
-%\end{align}
-%This obviously poses a problem, since the solution at the next time step should not depend on itself. But we can solve  \cref{eq:BTCS} for $\rho_j^n$.
-%This can then be written down as a matrix equation
-%\begin{align}
-%\bm M \begin{pmatrix}
-%\rho^{n+1}_0\\
-%\rho^{n+1}_1\\
-%\vdots\\
-%\rho^{n+1}_N\\
-%\end{pmatrix}
-%=
-%\begin{pmatrix}
-%\rho^{n}_0\\
-%\rho^{n}_1\\
-%\vdots\\
-%\rho^{n}_N\\
-%\end{pmatrix}
-%\end{align}
-%We can solve for the solution at $n+1$ by either multiplying by $M^{-1}$, or solving the system of linear equations (numerically advantageous).
+The Backward in Time Centered in Space  (BTCS) is a finite-difference scheme as well. The derivatives approximate to
+\begin{align}
+\pder{\rho^{n+1}_j}{t}&=\frac{\rho_j^{n+1}-\rho_j^{n}}{\Delta t},\\
+\pder{\rho^{n+1}_j}{x}&=\frac{\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}}{2\Delta x}.
+\end{align}
+Plugging this into equation \cref{eq:linear_advection} and solving for $\rho^{n+1}_j$, leaves us with
+\begin{align}
+\rho_j^{n+1}=\rho_j^n-\frac c2\left(\rho_{j+1}^{n+1}-\rho_{j-1}^{n+1}\right).\label{eq:BTCS}
+\end{align}
+This obviously poses a problem, since the solution at the next time step should not depend on itself. But we can solve  \cref{eq:BTCS} for $\rho_j^n$.
+This can then be written down as a matrix equation
+\begin{align}
+\bm M \begin{pmatrix}
+\rho^{n+1}_0\\
+\rho^{n+1}_1\\
+\vdots\\
+\rho^{n+1}_N\\
+\end{pmatrix}
+=
+\begin{pmatrix}
+\rho^{n}_0\\
+\rho^{n}_1\\
+\vdots\\
+\rho^{n}_N\\
+\end{pmatrix}
+\end{align}
+We can solve for the solution at $n+1$ by either multiplying by $M^{-1}$, or solving the system of linear equations (numerically advantageous). \\ \\
+\textbf{Properties:} First order accurate, unconditionally stable. \cite[p.61]{lec}\todo{Find Citations} \\ \\
+We chose this scheme because it is unconditionally stable. We want want to test how it performs relative to the other schemes in their domain of stability and unstability. 
 \subsection{LaxWendroff}
+The derivation of the Lax-Wendroff method is slightly more involved so we do not go into any detail here but suggest reading it up on \cite[p.127 f.]{lax_book}. The scheme is given by
+\begin{align}
+\rho_i^{n+1}=\rho_i^n - \frac c2 \left(u^n_{i+1}-u^n_{i-1}\right) +\frac{c^2}{2}\left(u_{i+1}^n-2u_i^n+u_{i-1}^n\right).
+\end{align}
+\\
+\textbf{Properties:} Second order accurate, stable for $|c|<1$, mass and variance preserving.\cite[p.127]{lax_book} \\ \\
+We chose this scheme, since it has many desirable qualities such as second order accuracy or variance preservation. So we want to see if it is an improvement on the two other schemes without becoming very complicated. 
 \subsection{Properties of numerical schemes}
 We will now describe different properties of numerical schemes.
 \paragraph{Stability}
