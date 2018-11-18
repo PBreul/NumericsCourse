@@ -41,10 +41,10 @@ This can then be written down as a matrix equation
 \end{pmatrix}
 \end{align}
 We can solve for the solution at $n+1$ by either multiplying by $M^{-1}$, or solving the system of linear equations (numerically advantageous). \\ \\
-\textbf{Properties:} First order accurate, unconditionally stable, mass but not variance preserving (self calculation). \cite[p.61]{lec}\todo{Find Citations} \\ \\
+\textbf{Properties:} First order accurate, unconditionally stable, mass but not variance preserving (self calculation). \cite[p.61]{lec}\\ \\
 We chose this scheme because it is unconditionally stable. We want want to test how it performs relative to the other schemes in their domain of stability and unstability. 
 \subsection{LaxWendroff}
-The derivation of the Lax-Wendroff method is slightly more involved so we do not go into any detail here but suggest reading it up on \cite[p.127 f.]{lax_book}. The scheme is given by
+The derivation of the Lax-Wendroff method is slightly more involved so we do not go into any detail here. The scheme is given by  \cite[p.127 f.]{lax_book}
 \begin{align}
 \rho_i^{n+1}=\rho_i^n - \frac c2 \left(u^n_{i+1}-u^n_{i-1}\right) +\frac{c^2}{2}\left(u_{i+1}^n-2u_i^n+u_{i-1}^n\right).
 \end{align}
@@ -52,9 +52,9 @@ The derivation of the Lax-Wendroff method is slightly more involved so we do not
 \textbf{Properties:} Second order accurate, stable for $|c|<1$, mass and variance preserving.\cite[p.127]{lax_book} \\ \\
 We chose this scheme, since it has many desirable qualities such as second order accuracy or variance preservation. So we want to see if it is an improvement on the two other schemes without becoming very complicated. 
 \subsection{Properties of numerical schemes}
-We will now describe different properties of numerical schemes.
+We will now describe the different properties mentioned in more detail.
 \paragraph{Stability}
-Stability means that the error stays finite no matter for arbitrary number of time steps. Schemes can be unconditionally stable, meaning they are stable for any time step, no matter how large. The contrary is unconditionally unstable, no matter the time step, the error will always tend to infinity. The third option is conditionally stable, where the scheme is stable or unstable depending on the size of the time step (or in our case the Courant number $c$).\\
+Stability means that the error stays finite for arbitrary number of time steps. Schemes can be unconditionally stable, meaning they are stable for any time step, no matter how large. The contrary is unconditionally unstable, no matter the time step, the error will always tend to infinity. The third option is conditionally stable, where the scheme is stable or unstable depending on the size of the time step (or in our case the Courant number $c$).\\
 It is important to note, that even if a scheme is stable, this does not mean, that the solution is very precise, it just does not tend to infinity for infinite times. \\
 Here we will use the $l_2$ error norm, whose discretised version is given by
 \begin{align}
@@ -70,6 +70,6 @@ If the PDE conserves mass (and higher moments), it would be preferable if the nu
 the mass and the variance. Since the linear advection is a conservation law, we would prefer our schemes to preserve these quantities, so that they are independet of the time step.
 We will call mass and variance at zero time step $M_0$ and $V_0$.
 \paragraph{Numerical Diffusion}
-Some schemes show a diffusive behaviour even though the analytical solution does not diffuse, thus numerical diffusion. Diffusive schemes reduce the variance over time, which is a quantitative way to determine if a scheme is diffusive. \todo{Find Citation} 
+Some schemes show a diffusive behaviour even though the analytical solution does not diffuse, thus numerical diffusion. Diffusive schemes reduce the variance over time, which is a quantitative way to determine if a scheme is diffusive.
 \paragraph{Order of Accuracy}
-This describes the dependence of the error on the discretisation. One usually gives the first lead order of this dependence,  error $\propto (\Delta x)^n$ would mean that the scheme is $n$-th order accurate. This is an important property of a scheme since it tells us how our error will behave when changing resolution.
+This describes the dependence of the error on the discretisation. One usually gives the first lead order of this dependence. An error of $\propto (\Delta x)^n$ would mean that the scheme is $n$-th order accurate. This is an important property of a scheme since it tells us how our error will behave when changing resolution.

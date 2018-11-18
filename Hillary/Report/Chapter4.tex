@@ -1,37 +1,39 @@
 \section{Numerical Experiments}
 \subsection{Experimental Design}
 We will use two main experiments to analyse the properties of our numerical schemes introduced above. \\
-First we we simply simply evolve our initial condition in time and meanwhile monitor mass, variance and $l_2$-error at every time step. 
-With this we can test multiple properties. First, we can obviously test, if a scheme is mass and variance preserving. But we also know, that a diffusive scheme reduces the variance\todo{Find Citation}. So together with a visual test of the advection, we can judge if a scheme has numerical diffusion. \\
+First we we simply evolve our initial condition in time and meanwhile monitor mass, variance and $l_2$-error at every time step. 
+With this we can test multiple properties. First, we can obviously test, if a scheme is mass and variance preserving. But we also know, that a diffusive scheme reduces the variance. So together with a visual test of the advection, we can judge if a scheme has numerical diffusion. \\
 The error over time gives us information about the stability of the scheme, if it stays bounded, the scheme is stable. \\
-We will vary the Courant number in order to see when conditionally stable schemes become unstable. We will also use different initial conditions (smooth and discontinuous).\\ \\
-The second experiment is supposed to test accuracy of the schemes. We want to investigate the error depending on the discretisation $\Delta x$. When adjusting the number of grid points, we have to adjust the number of time steps accordingly, so that the quotient of the two is constant. We have to do that so that the  Courant number stays fixed for same velocity field $u$. \\
+We will vary the Courant number in order to see when conditionally stable schemes become unstable. We will also use different initial conditions (smooth and discontinuous) to see if this makes a difference.\\ \\
+The second experiment is supposed to test accuracy of the schemes. We want to investigate the error depending on the discretisation $\Delta x$. When adjusting the number of grid points, we have to adjust the number of time steps accordingly, so that the quotient of the two is constant. We have to do that so that the  Courant number stays fixed for the same velocity $u$. \\
 We take the $l_2$-error at the end of each run and plot it against the discretisation to see how the error scales. 
 \subsection{Results}
-In \cref{fig:gauss_stable} a gaussian curve was propagated in time for a Courant number of $c=0.2$. In the first picture we see the final state. Wee see, that Lax-Wendroff seems to perform better than BTCS which in turn is better than FTBS. This is also reflected in the second frame where the  $l_2$ error norms are shown and one can quantitatively see that the error of LaxWendroff is lower then BTCS which is lower then FTBS. We will discuss the oscillation of the error norm in \cref{ch:discussion}. \\
-From the error curves we can also tell, that they will probably stay bounded and converge, which we would expect, since the schemes are stable in this regime. \\
+In \cref{fig:gauss_stable} a gaussian curve was propagated in time for a Courant number of $c=0.2$. The first plot shows the final state. We see, that Lax-Wendroff seems to perform better than BTCS which in turn is better than FTBS. This is also reflected in the second frame where the  $l_2$ error norms are shown and one can quantitatively see that the error of LaxWendroff is lower then BTCS which is lower then FTBS. We will discuss the oscillation of the error norm in \cref{ch:discussion}. \\
+From the error curves we can also tell, that they will probably stay bounded and converge, which we would expect, since all schemes are supposed to be stable in this regime. \\
 While LaxWendroff and FTBS seem to be concerving mass in the third frame, BTCS does not. But the effect is minor and could be a numerical artifact from solving the linear equation system. \\
 But we find clearly that while Lax-Wendroff is variance preserving, the other two schemes are not. This means, that the other two schemes are diffusive. This is in agreement to the visual diffusion we see in the first figure.\\ \\
 In \cref{fig:step_stable} we wanted to test the performance of the schemes under similar conditions but with discontinuous initial condition. For both LaxWendroff and BTCS we can observe numerical dispersion which leads to oscillatory behaviour near the discontinuity, but in this report we will not focus on dispersion. Otherwise the performance is similar to the case of smooth initial conditions. All schemes seem stable, judging by their error curves, although LaxWendroff does not seem to perform better than BTCS anymore.\\
 Except from the small deviation from BTCS, the schemes still preserve mass. \\
 But surprisingly, while FTBS and BTCS are still loosing variance over time, this effect is not as strong as in \cref{fig:gauss_stable}. A short discussion can be found in \cref{ch:discussion}. \\ \\
-We also wanted to show that schemes become unstable. So we used a Courant number of $c=1.4$ in \cref{fig:gauss_unstable}. By eye one can already tell that the solution looks terrible for FTBS and LaxWendroff, and the error curve is clearly divergent for these two schemes. The BTCS scheme on the other hand seems to be stable as expected.\\
-Interestingly LaxWendroff does not seem to preserve neither mass nor variance any more. And we tested that for more propagation steps FTBS would not preserve mass either.\\
+We also wanted to show that schemes become unstable. So we used a Courant number of $1<c=1.4$ in \cref{fig:gauss_unstable}. By eye one can already tell that the solution looks terrible for FTBS and LaxWendroff, and the error curve is clearly divergent for these two schemes. The BTCS scheme on the other hand seems to be stable as expected.\\
+Interestingly LaxWendroff does not seem to preserve neither mass nor variance any more. For a higher number of propagation steps FTBS would not preserve mass either.\\
 The brake down off these properties is not surprising, since the two schemes are unstable.  \\ \\
-In \cref{fig:accuracy} the second experiment we ran can be seen, where we wanted to test the accuracy of the schemes. These follow nicely the theoretically expected scaling laws but deviate for larger discretisations. This is expected, since the order of accuracy is determined by the first non vanishing Taylor term and assuming all higher order terms are comparably small. But for ever larger $\Delta x$, the higher order terms become non-negligible and thus the curves deviate. 
-\FloatBarrier
-\begin{figure}
+In \cref{fig:accuracy} the second experiment we ran can be seen, where we wanted to test the accuracy of the schemes. These follow nicely the theoretically expected scaling laws but deviate for larger discretisations. This is expected, since the order of accuracy is determined by the first non vanishing Taylor term and assuming all higher order terms are comparably small. But for ever larger $\Delta x$, the higher order terms become non-negligible and thus the curves deviate. \\ \\
+\begin{figure}[h!]
 \centering
 \includegraphics[width = 0.91\textwidth]{gauss_c0_2dx0_08.pdf}
-\caption{Shown is a gaussian initial condition, $\sqrt{\pi}\mathcal{N}(10,1/2)$, on a grid with 250 gridpoints which was propagated with different schemes and Courant number of $c=0.2$ for 560 timesteps. The first figure shows the final configuration, the second the $l_2$-error norm against time steps, the third picture the relative mass difference and the fourth picture the relative variance difference to the initial conditions.}\label{fig:gauss_stable}
-\includegraphics[width = 0.91\textwidth]{step_c0_2dx0_08.pdf}
-\caption{Shown is an initial step function for $\rho_0 = 1,  \text{if}\ x \in [0,10] $, otherwise same set up as in \cref{fig:gauss_stable} for comparison. }\label{fig:step_stable}
+\caption{Shown is a gaussian initial condition, $\sqrt{\pi}\mathcal{N}(10,1/2)$, on a grid with 250 gridpoints, propagated with different schemes and Courant number of $c=0.2$ for 560 timesteps. The first figure shows the final configuration, the second the $l_2$-error norm against time steps, the third picture the relative mass difference and the fourth picture the relative variance difference to the initial conditions. We can observe the error curve to stay bounded which means the schemes are stable. We can also see that FTBS and BTCS do not preserve variance, which means the schemes are diffusive. The non mass preservation of BTCS is probably a numerical artefact. }\label{fig:gauss_stable}
 \end{figure}
-\FloatBarrier
 \begin{figure}
 \centering
+\includegraphics[width = 0.91\textwidth]{step_c0_2dx0_08.pdf}
+\caption{Shown is an initial step function for $\rho_0 = 1,  \text{if}\ x \in [0,10] $. Otherwise same set up as in \cref{fig:gauss_stable} for comparison. We observe similar behaviour, despite the different initial conditions. }\label{fig:step_stable}
+
 \includegraphics[width = 0.91\textwidth]{gauss_c1_4dx0_16.pdf}
-\caption{Shown is a gaussian initial condition, $\sqrt{\pi}\mathcal{N}(10,1/2)$, on a grid with 125 gridpoints, a Courant number of $c=1.4$ and 40 timesteps, so that the quantities are  consistent and we can compare. One can easily see that the LaxWendroff and FTBS become unstable since their error norms start to diverge, while the error for the BTCS scheme is still higher then in \cref{fig:gauss_stable}, it still stays bounded, since this scheme is stable.}\label{fig:gauss_unstable}
+\caption{Shown is a gaussian initial condition, $\sqrt{\pi}\mathcal{N}(10,1/2)$, on a grid with 125 gridpoints, a Courant number of $c=1.4$ and 40 timesteps, so that the quantities are  consistent and we can compare. One can easily see that the LaxWendroff and FTBS become unstable since their error norms start to diverge, while the error for the BTCS scheme is higher then in \cref{fig:gauss_stable}, it still stays bounded, since this scheme is stable.}\label{fig:gauss_unstable}
+\end{figure}
+\begin{figure}
+\centering
 \includegraphics[width = 0.6\textwidth]{OrderAccuracy_c0_2.pdf}
 \caption{Shown are $l_2$ error norms for different discretisations $\Delta x$. We want to illustrate the accuracy of a scheme, which is the leading term dependence of the error on the discretisation. For the creation of this plot a gaussian initial condition was used, $\sqrt{\pi}\mathcal{N}(10,1/2)$ and a Courant number of $c=0.2$. The time steps were equally adjusted to the number of grid points. The discretisation $\Delta x$ was normalised by the whole domain $X$. For small $\Delta x$, the curves follow nicely the theoretically expected scaling behaviour.}\label{fig:accuracy}
 \end{figure}
