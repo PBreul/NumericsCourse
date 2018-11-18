@@ -1,7 +1,10 @@
 import os
 
-# This script calls the Main Program with different courant numbers
+# This script calls the TimeEvolutionObservation with different initial conditions and Courant numbers.
+# And the Accuracyinvestigation
+
 print("Calculate time evolution of Gaussian")
+
 # number of grid points
 nx = 250
 
@@ -36,4 +39,4 @@ os.system("python3 TimeEvolutionObservation.py {} {} {} {}".format(nx, nt, c, in
 
 print("Make accuracy plots, that might take a second")
 
-# os.system("python3 AccuracyInvestigation.py")
+os.system("python3 AccuracyInvestigation.py")

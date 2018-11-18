@@ -38,6 +38,9 @@ if __name__ == "__main__":
     # some parameter for the initial condition, e.g. the center of a gaussian curve, if None, center is automatically
     parameter_initial_cond = None
 
+    # advection schemes which will be used to solve the equation
+    used_advection_schemes = ("FTBS", "BTCS", "LaxWendroff")
+
     dx = (x_max - x_min) / grid_points
     x_grid = np.arange(x_min, x_max, dx)
 
@@ -65,7 +68,7 @@ if __name__ == "__main__":
     # Evolving and Plotting. Could be over another list
     # If you want something different, than what this function does, implement it here "by hand"
 
-    for advection_scheme_key in ("FTBS", "BTCS", "LaxWendroff"):
+    for advection_scheme_key in used_advection_schemes:
         # Iterate over all advection schemes
         # Call the time evolution, together with the Observers, which measure the quantities of interest while the
         # simulation is running
@@ -86,11 +89,11 @@ if __name__ == "__main__":
 
         axs2.plot((MomentObserver.mass_array - MomentObserver.mass_array[0]) / MomentObserver.mass_array[0],
                   color=plot_color,
-                  label= advection_scheme_key)
+                  label=advection_scheme_key)
 
         axs3.plot((MomentObserver.variance_array - MomentObserver.variance_array[0]) / MomentObserver.variance_array[0],
                   color=plot_color,
-                  label= advection_scheme_key)
+                  label=advection_scheme_key)
 
     axs0.plot(x_grid, u_analytic_sol, "--", color="black", label="analytical")
     axs2.plot(np.arange(time_steps), np.zeros(time_steps), "--", color="black")
@@ -98,14 +101,13 @@ if __name__ == "__main__":
 
     # Plot Settings
     axs0.set_ylim(-0.1, 1.3)
-    axs3.set_ylim(-0.01,0.01)
+    axs3.set_ylim(-0.01, 0.01)
 
     axs0.set_xlabel("x")
     axs0.set_ylabel(r"$\rho$")
 
     axs1.set_xlabel("# time steps")
     axs1.set_ylabel("Error")
-
 
     axs2.set_xlabel("# time steps")
     axs2.set_ylabel("$(M-M_0)/M_0$")
@@ -126,6 +128,6 @@ if __name__ == "__main__":
         os.makedirs(savingpath)
     # Save Plot
     savingname = savingpath + init_curve + "_c{}dx{}".format(c, dx)
-    savingname = savingname.replace(".", "_")+".pdf"
+    savingname = savingname.replace(".", "_") + ".pdf"
     plt.savefig(savingname, bbox_inches="tight")
     # plt.show()
